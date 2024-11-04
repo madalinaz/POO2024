@@ -11,6 +11,7 @@ enum Alergie {
 
 class FelMancare
 {
+	const int id;//primit ca parametru
 	string denumire;
 	int nrCalorii;
 	int nrIngrediente;
