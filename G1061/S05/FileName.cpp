@@ -5,6 +5,24 @@ enum Departament {
 	IT, HR, SALES
 };
 
+enum Alergie {
+	OU, TELINA, SCOICI
+};
+
+class FelMancare
+{
+	string denumire;
+	int nrCalorii;
+	int nrIngrediente;
+	string* listaIngrediente;
+	float* gramajIngrediente;
+	int nrAlergeni;
+	Alergie* listaAlergii;
+	static int nrMediuCalorii;
+	static int nrMinimCalorii;//folosit pentru validare la nrCalorii
+	bool disponibilitate[12];//daca este sau nu disponibil felul de mancare pentru fiecare luna a anului
+public:
+};
 
 class Angajat {
 	const int cod;//codul este unic si generat automat 1001, 1002, etc
@@ -53,6 +71,29 @@ public:
 		}
 	}
 	//constr de copiere
+	Angajat(const Angajat& a): cod(1000 + (++Angajat::nrAngajati)) {//folosesc & pentru ca vreau sa ocolesc copierea
+		if (a.nume != nullptr) {
+			this->nume = new char[strlen(a.nume) + 1];
+			strcpy_s(this->nume, strlen(a.nume) + 1, a.nume);
+		}
+		else {
+			this->nume = new char[strlen("Anonim") + 1];
+			strcpy_s(this->nume, strlen("Anonim") + 1, "Anonim");
+		}
+		this->departament = a.departament;
+		this->salariu = a.salariu;
+		if (a.nrBonusuri > 0 && a.listaBonusuri != nullptr) {
+			this->nrBonusuri = a.nrBonusuri;
+			this->listaBonusuri = new float[this->nrBonusuri];
+			for (int i = 0; i < this->nrBonusuri; i++)
+				this->listaBonusuri[i] = a.listaBonusuri[i];
+		}
+		else {
+			this->nrBonusuri = 0;
+			this->listaBonusuri = nullptr;
+		}
+	}
+
 	//meth afisare
 	void afisare() {
 		cout << "\n----------------";
@@ -66,6 +107,10 @@ public:
 			cout << this->listaBonusuri[i] << " ";
 	}
 	// meth pentru gestiune atribute statice
+	static int getNrAngajati() {
+		return Angajat::nrAngajati;
+	}
+
 	// get si set pentru nume
 	const char* getNume() {
 		return this->nume;
@@ -120,6 +165,10 @@ int main() {
 		nume2 = nullptr;
 	}
 
+	cout << endl << "\nNr angajati: " << Angajat::getNrAngajati();
 
+	Angajat a3(a2);//apel constructor de copiere
+	Angajat a4 = a2;
+	a4.afisare();
 	return 0;
 }
