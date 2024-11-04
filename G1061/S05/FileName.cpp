@@ -28,7 +28,7 @@ public:
 		this->listaBonusuri = nullptr;
 	}
 	//constr cu toti param
-	Angajat(char* _nume, Departament _departament, 
+	Angajat(const char* _nume, Departament _departament, 
 		float _salariu, int _nrBonusuri, 
 		float* _listaBonusuri):cod(1000 + (++Angajat::nrAngajati)) {
 		if (_nume != nullptr) {
@@ -67,7 +67,31 @@ public:
 	}
 	// meth pentru gestiune atribute statice
 	// get si set pentru nume
+	const char* getNume() {
+		return this->nume;
+	}
+
+	char* getNume2() {
+		char* copie = nullptr;
+		if (this->nume != nullptr) {
+			copie = new char[strlen(this->nume) + 1];
+			strcpy_s(copie, strlen(this->nume) + 1, this->nume);
+		}
+		return copie;
+	}
+
 	//destructor
+	~Angajat() {
+		if (this->nume != nullptr) {
+			delete[] this->nume;
+			this->nume = nullptr;
+		}
+
+		if (this->listaBonusuri != nullptr) {
+			delete[] this->listaBonusuri;
+			this->listaBonusuri = nullptr;
+		}
+	}
 };
 
 int Angajat::nrAngajati = 0;
@@ -80,5 +104,22 @@ int main() {
 
 	Angajat a1;
 	a1.afisare();
+
+	float bonusuri[] = { 120.5,1000,1200 };
+	Angajat a2("Gigel", Departament::IT, 12000, 3, bonusuri);
+	a2.afisare();
+
+	cout << endl << a2.getNume();
+	cout << endl << a2.getNume2();
+	const char* nume = a2.getNume();
+	char* nume2 = a2.getNume2();
+	cout << endl << nume2;
+	//nu uitam dezalocarea din cauza lui getNume2
+	if (nume2 != nullptr) {
+		delete[] nume2;
+		nume2 = nullptr;
+	}
+
+
 	return 0;
 }
