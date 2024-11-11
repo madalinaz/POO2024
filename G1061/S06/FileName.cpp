@@ -75,6 +75,72 @@ public:
 		}
 	}
 
+	//operator=
+	Angajat& operator=(const Angajat& a) {
+		if (this != &a) 
+		{
+			//lucreaza pe obj existente, atunci avem in vedere
+			//posibile dezalocari
+			if (this->nume != nullptr) {
+				delete[] this->nume;
+				this->nume = nullptr;
+			}
+			if (this->listaBonusuri != nullptr) {
+				delete[] this->listaBonusuri;
+				this->listaBonusuri = nullptr;
+			}
+			if (a.nume != nullptr) {
+				this->nume = new char[strlen(a.nume) + 1];
+				strcpy_s(this->nume, strlen(a.nume) + 1, a.nume);
+			}
+			else {
+				this->nume = new char[strlen("Anonim") + 1];
+				strcpy_s(this->nume, strlen("Anonim") + 1, "Anonim");
+			}
+			this->departament = a.departament;
+			this->salariu = a.salariu;
+			if (a.nrBonusuri > 0 && a.listaBonusuri != nullptr) {
+				this->nrBonusuri = a.nrBonusuri;
+				this->listaBonusuri = new float[this->nrBonusuri];
+				for (int i = 0; i < this->nrBonusuri; i++)
+					this->listaBonusuri[i] = a.listaBonusuri[i];
+			}
+			else {
+				this->nrBonusuri = 0;
+				this->listaBonusuri = nullptr;
+			}
+		}
+		return *this;
+	}
+
+	//operator comparatie
+	bool operator!=(const char* _altNume) {
+		if (this->nume != nullptr && _altNume != nullptr) {
+			if (strcmp(this->nume, _altNume) != 0)
+				return true;
+			else
+				return false;
+		}
+		return false;
+	}
+
+	//redimensionare vector alocat dinamic
+	Angajat& operator+=(float _altBonus) {
+		if (_altBonus > 0) {
+			Angajat copie = *this;
+			if (this->listaBonusuri != nullptr) {
+				delete[] this->listaBonusuri;
+				this->listaBonusuri = nullptr;
+			}
+			this->listaBonusuri = new float[this->nrBonusuri + 1];
+			for (int i = 0; i < this->nrBonusuri; i++)
+				this->listaBonusuri[i] = copie.listaBonusuri[i];
+			this->listaBonusuri[this->nrBonusuri] = _altBonus;
+			this->nrBonusuri++;
+		}
+		return *this;
+	}
+
 	//meth afisare
 	void afisare() {
 		cout << "\n----------------";
@@ -119,9 +185,15 @@ public:
 			this->listaBonusuri = nullptr;
 		}
 	}
+
+	friend bool operator>(float _altSalariu, const Angajat& a);
 };
 
 int Angajat::nrAngajati = 0;
+
+bool operator>(float _altSalariu, const Angajat& a) {
+	return _altSalariu > a.salariu;
+}
 
 int main() {
 	Angajat a1;
@@ -131,6 +203,49 @@ int main() {
 	Angajat a2("Gigel", Departament::IT, 12000, 3, bonusuri);
 	a2.afisare();
 
+	a1 = a2;
+	a1.operator=(a2);
+	a1.afisare();
+	a1 = a2 = a1;
+	a1.afisare();
 
+	//a1 = a1;
+	//a1.afisare();
+
+	char nume[] = "Gigel";
+
+	Angajat a3(nume, Departament::IT, 12000, 3, bonusuri);
+	Angajat a4(nume, Departament::HR, 11000, 2, bonusuri);
+	a3 = a4;
+	a3.afisare();
+
+	if (a1 != "Gigel")
+		cout << "\nA1 nu este Gigel";
+	else
+		cout << "\nInvers";
+
+	if (1200 > a1)
+		cout << "\nAngajatul a1 are un salariu <1200";
+	else
+		cout << "\nInvers";
+
+	a1 += 100;//adaugam un nou bonus
+	a1.afisare();
+
+	if (a1 != a2)
+		cout << "\nObiecte diferite";
+	else
+		cout << "\nObiecte identice";
+	/*
+	P1.se identif tipul operatorului (binar/unar, aritmetic, logic...)
+	P2.se indetif tipul operanzilor
+	P3.daca primul operand este de tipul clasei, atunci
+	se poate supraincarca printr-o metoda a clasei (primul 
+	operand este "inghitit" de this). daca nu, 
+	atunci obligatoriu se implementeaza printr-o functie globala
+	(primeste ca parametri toti operanzii)
+	P4.!!!ce obiecte se modifica?
+	P5. !!!ce returneaza metoda
+	*/
 	return 0;
 }
