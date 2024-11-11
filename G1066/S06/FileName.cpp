@@ -99,6 +99,44 @@ public:
 		}
 		return *this;
 	}
+
+	//op comparatie
+	bool operator<(float x) {
+		return this->salariu < x;
+	}
+
+	Angajat& operator-=(float x) {
+		if (x > 0 && this->salariu > x) {
+			this->salariu -= x;
+		}
+		return *this;
+	}
+
+	Angajat& operator+=(float x) {
+		if (x > 0) {
+			Angajat copie = *this;
+			if (this->listaBonusuri != nullptr) {
+				delete[] this->listaBonusuri;
+				this->listaBonusuri = nullptr;
+			}
+			this->nrBonusuri++;
+			this->listaBonusuri = new float[this->nrBonusuri];
+			for (int i = 0; i < copie.nrBonusuri; i++)
+				this->listaBonusuri[i] = copie.listaBonusuri[i];
+			this->listaBonusuri[this->nrBonusuri - 1] = x;
+		}
+		return *this;
+	}
+
+	bool operator==(Angajat a) {
+		if (strcmp(this->nume, a.nume) != 0)
+			return false;
+		if (this->salariu != a.salariu)
+			return false;
+		//....
+		return true;
+	}
+
 	//get si set pentru nume
 	const char* getNume() {
 		return this->nume;
@@ -126,6 +164,12 @@ public:
 	{
 		return Angajat::nrAngajati;
 	}
+
+	float getSalariu(){
+		this->salariu = 10;
+		return this->salariu;
+	}
+
 	//meth afisare
 	void afisare()
 	{
@@ -140,6 +184,7 @@ public:
 			cout << this->listaBonusuri[i] << " ";
 		cout << "\n--------------------------\n";
 	}
+
 	//destructor
 	~Angajat() {
 		if (this->nume != nullptr)
@@ -156,10 +201,55 @@ public:
 
 int Angajat::nrAngajati = 0;
 
+bool operator<=(float x, Angajat a) {
+	return x <= a.getSalariu();
+	//return !(a < x);
+}
+
 int main() {
 
 	Angajat a1;
 	Angajat a2("Nume", 10000, IT);
-	
+	/*
+	=
+	+= -= *= /= (actualizam this)
+	!= == <= (comparatie) (obj to obj)(alte versiune)
+	! ++ (pre si post)
+	+ (obj + obj; obj + int; int + obj)
+	cast
+	[] (index ce primeste o pozitie dar si index ce returneaza o pozitie)
+	<< si >>
+	functie ()
+	*/
+
+	a2.operator<(8000);
+	if (a2 < 8000)
+		cout << "\nAngajatul a2 are un salariu < 8000";
+	else
+		cout << "\nInvers";
+	operator<=(11000, a2);
+	if (11000 <= a2)
+		cout << "\nAngajatul a2 are un salariu cel putin de 11.000";
+	else
+		cout << "\nInvers";
+
+	a2 -= 100;//actualizam salariul lui a2
+	//a1 = a1 -= 100;
+	a2.afisare();
+
+	a2 += 200;//adaug un nou bonus
+
+
+	/*
+	P1.identif tip operator (binar/unar; aritmetic...)
+	P2.identif tip operanzi
+	P3.daca primul operand este de tipul clasei, atunci se poate/
+	se recomanda supraincarcarea printr-o functie membra (primul
+	operand este "inghitit" de this; altfel, se implementeaza obligatoriu
+	printr-o functie globala(nu mai avem this) (lista param este 
+	formata din toti operanzii)
+	P4. !!!ce returneaza???
+	P5. !!!ce obiecte se modifica????
+	*/
 	return 0;
 }
