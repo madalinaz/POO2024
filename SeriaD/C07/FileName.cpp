@@ -68,6 +68,34 @@ public:
 		return *this;
 	}
 
+	//forma pre-incrementare
+	Masina& operator++() {
+		this->pret++;
+		return *this;//returneaza starea de dupa incrementare
+	}
+
+	//forma post-incrementare
+	//return prin valoare pentru ca
+	//copie se distruge ( este pe stiva op++)
+	Masina operator++(int) {
+		Masina copie = *this;
+		this->pret++;
+		return copie;//returnez starea de dinainte a incrementarii
+	}
+
+	//putem const ca sa protejam obj this
+	//cu const nu putem sa modificam obj this
+	float operator+(float x) const{
+		//NU modificam this-ul
+		if (x > 0) {
+			float total = 0;
+			for (int i = 0; i < this->nrDeplasari; i++)
+				total += this->distantaDeplasari[i];
+			return total + x;
+		}
+		return 0;
+	}
+
 	~Masina() {
 		if (this->distantaDeplasari != nullptr) {
 			delete[] this->distantaDeplasari;
@@ -86,13 +114,97 @@ public:
 		cout << "\nAn fabricatie: " << this->anFabricatie;
 	}
 
+	friend ostream& operator<<(ostream& out, const Masina& m);
+	friend istream& operator>>(istream& in, Masina& m);
 };
 
 
+//DP Adapter
+float operator+(float x, const Masina& m) {
+	return m + x;
+}
 
+ostream& operator<<(ostream& out, const Masina& m) {
+	out << "\n------------------";
+	out << "\nModel: " << m.model;
+	out << "\nNr deplasari: " << m.nrDeplasari;
+	out << "\nDistanta deplasari: ";
+	for (int i = 0; i < m.nrDeplasari; i++)
+		out << m.distantaDeplasari[i] << " ";
+	out << "\nPret: " << m.pret;
+	out << "\nAn fabricatie: " << m.anFabricatie;
+	return out;
+}
+
+//transfer prin referinta m pentru ca il modific
+//deci nu declar si constant
+istream& operator>>(istream& in, Masina& m) {
+	//nu mai pot citi atributele constante
+	//SAU POT????DE GANDIT
+	cout << "\nIntroduceti model: ";
+	in >> m.model;
+	cout << "Introduceti pret: ";
+	in >> m.pret;
+	if (m.distantaDeplasari != nullptr) {
+		delete[] m.distantaDeplasari;
+		m.distantaDeplasari = nullptr;
+	}
+	cout << "Introduceti nr deplasari: ";
+	int x;
+	in >> x;
+	if (x > 0) {
+		m.nrDeplasari = x;
+		m.distantaDeplasari = new float[x];
+		cout << "Introduceti deplasarile: ";
+		for (int i = 0; i < x; i++)
+			in >> m.distantaDeplasari[i];
+	}
+	else {
+		m.nrDeplasari = 0;
+		m.distantaDeplasari = nullptr;
+	}
+	return in;
+}
+
+Masina test() {
+	float deplasari[] = { 100,200,300 };
+	Masina m("Dacia", 3, deplasari, 12000, 2010);
+	return m;
+}
 
 int main() {
-	
+	Masina rez(2010);
+	rez = test();
+	rez.afisare();
+	int x = 2;
 
+	int y = 3;
+	y = ++x;
+	y = x++;
+
+	float deplasari[] = { 100,200,300 };
+	Masina m1("Dacia", 3, deplasari, 12000, 2010);
+	Masina m2("Ford", 0, nullptr, 20000, 2024);
+	m2 = ++m1;
+	m2.operator=(m1.operator++());
+	m1.afisare();
+	m2.afisare();
+	m2 = m1++;
+	m2.operator=(m1.operator++(2));
+	m1.afisare();
+	m2.afisare();
+
+	float totalDeplasari = m1 + 200;
+	cout << endl << "Total: " << totalDeplasari;
+	
+	float totalDeplasari2 = 300 + m1;
+	operator+(x, m1);
+	cout << endl << "Total: " << totalDeplasari2;
+
+	cout << m1 << m2;
+	cin >> m1;
+	cout << m1;
+
+	//cast functie []
 	return 0;
 }
