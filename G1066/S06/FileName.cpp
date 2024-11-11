@@ -11,7 +11,8 @@ class Angajat {
 	float salariu;
 	Departament departament;
 	static int nrAngajati;
-	static float salariuMediu;//TO DO HOME
+	int nrBonusuri;
+	float* listaBonusuri;
 
 public:
 	//constr fara param
@@ -20,8 +21,11 @@ public:
 		strcpy_s(this->nume, strlen("Anonim") + 1, "Anonim");
 		this->salariu = 0;
 		this->departament = IT;
+		this->nrBonusuri = 0;
+		this->listaBonusuri = nullptr;
 	}
-	//constr cu toti param
+
+	//constr cu aproape toti param
 	Angajat(const char* _nume, float salariu = 0, Departament = IT) :id(1000 + (++Angajat::nrAngajati)) {
 		if (_nume != nullptr) {
 			this->nume = new char[strlen(_nume) + 1];
@@ -32,7 +36,10 @@ public:
 		}
 		this->salariu = salariu;
 		this->departament = departament;
+		this->nrBonusuri = 0;
+		this->listaBonusuri = nullptr;
 	}
+
 	//constr de copiere
 	Angajat(const Angajat& a) :id(1000 + (++Angajat::nrAngajati)) {
 		if (a.nume != nullptr) {
@@ -44,6 +51,16 @@ public:
 		}
 		this->salariu = a.salariu;
 		this->departament = a.departament;
+		if (a.nrBonusuri > 0 && a.listaBonusuri != nullptr) {
+			this->nrBonusuri = a.nrBonusuri;
+			this->listaBonusuri = new float[this->nrBonusuri];
+			for (int i = 0; i < this->nrBonusuri; i++)
+				this->listaBonusuri[i] = a.listaBonusuri[i];
+		}
+		else {
+			this->nrBonusuri = 0;
+			this->listaBonusuri = nullptr;
+		}
 	}
 	//op =
 	Angajat& operator=(const Angajat& a)
@@ -56,6 +73,10 @@ public:
 				delete[] this->nume;
 				this->nume = nullptr;
 			}
+			if (this->listaBonusuri != nullptr) {
+				delete[] this->listaBonusuri;
+				this->listaBonusuri = nullptr;
+			}
 			if (a.nume != nullptr) {
 				this->nume = new char[strlen(a.nume) + 1];
 				strcpy_s(this->nume, strlen(a.nume) + 1, a.nume);
@@ -65,6 +86,16 @@ public:
 			}
 			this->salariu = a.salariu;
 			this->departament = a.departament;
+			if (a.nrBonusuri > 0 && a.listaBonusuri != nullptr) {
+				this->nrBonusuri = a.nrBonusuri;
+				this->listaBonusuri = new float[this->nrBonusuri];
+				for (int i = 0; i < this->nrBonusuri; i++)
+					this->listaBonusuri[i] = a.listaBonusuri[i];
+			}
+			else {
+				this->nrBonusuri = 0;
+				this->listaBonusuri = nullptr;
+			}
 		}
 		return *this;
 	}
@@ -98,10 +129,16 @@ public:
 	//meth afisare
 	void afisare()
 	{
-		cout << "ID" << this->id << endl;
-		cout << "Nume" << this->nume << endl;
-		cout << "Salariul" << this->salariu << endl;
-		cout << "Departament" << this->departament << endl;
+		cout << "\n--------------------------\n";
+		cout << "ID: " << this->id << endl;
+		cout << "Nume: " << this->nume << endl;
+		cout << "Salariul: " << this->salariu << endl;
+		cout << "Departament: " << this->departament << endl;
+		cout << "Nr bonusuri: " << this->nrBonusuri << endl;
+		cout << "Lista bonusuri: ";
+		for (int i = 0; i < this->nrBonusuri; i++)
+			cout << this->listaBonusuri[i] << " ";
+		cout << "\n--------------------------\n";
 	}
 	//destructor
 	~Angajat() {
@@ -109,6 +146,10 @@ public:
 		{
 			delete[] this->nume;
 			this->nume = nullptr;
+		}
+		if (this->listaBonusuri != nullptr) {
+			delete[] this->listaBonusuri;
+			this->listaBonusuri = nullptr;
 		}
 	}
 };
@@ -119,21 +160,6 @@ int main() {
 
 	Angajat a1;
 	Angajat a2("Nume", 10000, IT);
-	a1.afisare();
-	cout << endl;
-	a2.afisare();
-	Angajat a3(a2);
-	a3.afisare();
-	cout << a2.getNume();
-	a2.setNume("George");
-	a2.afisare();
-	a1 = a2;
-	a1.afisare();
-	a1 = a2 = a3;//apel in cascada
-	a1.afisare();
-	//a1 += a2 = a3;//apel in compunere
-	a1 = a1;//auto asignare
-	a1.afisare();
-	cout << Angajat::getNrAngajati();
+	
 	return 0;
 }
