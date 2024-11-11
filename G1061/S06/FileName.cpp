@@ -141,6 +141,15 @@ public:
 		return *this;
 	}
 
+	bool operator!=(const Angajat& a) {
+		if (strcmp(this->nume, a.nume) != 0)
+			return true;
+		if (this->salariu != a.salariu)
+			return true;
+		//....pentru toate celelalte
+		return false;
+	}
+
 	//meth afisare
 	void afisare() {
 		cout << "\n----------------";
