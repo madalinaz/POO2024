@@ -146,6 +146,43 @@ public:
 		return true;
 	}
 
+	//pre-incrementare
+	//return prin referinta pentru ca obj this NU este alocat pe stiva fct operator ++ si NU se distruge dupa ce se termina apelul operatorului++
+	Angajat& operator++() {
+		this->salariu++;
+		return *this;//returnam obj de dupa incrementare
+	}
+
+	//post-incrementare
+	//returnez prin valoare obj Angajat pentru ca obj copie este declarat pe stiva fct operator++ si este distrus atunci cand se termina executia operatorului ++
+	Angajat operator++(int) {
+		Angajat copie = *this;
+		this->salariu++;
+		return copie;//returnez stare obj de dinainte de incrementare
+	}
+
+	bool operator!() {
+		return this->nume == nullptr;
+	}
+
+	//operator index de consultare (return float)
+	//operator index si de modificare (get si set) (return float&)
+	float operator[](int _index) {
+		if (_index >= 0 && _index < this->nrBonusuri) {
+			return this->listaBonusuri[_index];
+		}
+	}
+
+	Angajat operator/(float x) {
+		//acest operator NU modifica niciun operand, adica NU modifica pe this
+		Angajat rez = *this;
+		if (x > 0) {
+			for (int i = 0; i < rez.nrBonusuri; i++)
+				rez.listaBonusuri[i] /= x;
+		}
+		return rez;
+	}
+
 	//get si set pentru nume
 	const char* getNume() {
 		return this->nume;
@@ -265,15 +302,44 @@ int main() {
 	Angajat a2("Gigel", 10000, IT);
 	cout << a2; //cout este un obj de tipul ostream
 	cout << a2 << a1; 
-	cin >> a2;//cin este un obj de tip istream
+	//cin >> a2;//cin este un obj de tip istream
+	cout << a2;
+
+	a1 = ++a2;
+	cout << a1 << a2;
+	a1 = a2++;//adauga inca un bonus egal cu ultimul din lista
+	//adauga inca un bonus egal cu media tuturor bonusurilor din lista angajatului
+	//adaug 1 leu la salariu
+	cout << a1 << a2;
+
+	int x = 10;
+	int y = 2;
+	y = !x;
+
+	if (!x)
+		cout << "\nx este 0";
+	else
+		cout << "\nx este diferit de 0";
+
+
+	if (!a2)
+		cout << "\nAngajatul a2 nu are nume";
+	else
+		cout << "\nAngajatul a2 are un nume";
+
+	a2 += 100;
+	a2 += 200;
+	a2 += 300;
+	float bonus = a2[1];
+	cout << "\nBonusul de pe pozitia 1 este: " << bonus;
+	/*a2[1] = 201;
+	cout << a2;*/
+
+	a2 = a2 / 2;
 	cout << a2;
 
 	/*
-	! ++ (pre si post)
-	+ (obj + obj; obj + int; int + obj)
 	cast
-	[] (index ce primeste o pozitie dar si index ce returneaza o pozitie)
-	<< si >>
 	functie ()
 	*/
 
