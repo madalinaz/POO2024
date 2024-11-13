@@ -5,6 +5,15 @@ enum Departament {
 	IT, HR, VZ
 };
 
+//TO DO supraincarcare operator >> si << pentru a citi si scrie obj de tip Departament
+ostream& operator<<(ostream& out, Departament d) {
+	if (d == Departament::IT)
+		out << "IT";
+	else
+		out << "OTHER";
+	return out;
+}
+
 class Angajat {
 	const int id;//cod unic care se genereaza automat
 	char* nume;
@@ -185,6 +194,47 @@ public:
 	}
 
 	friend ostream& operator<<(ostream& out, const Angajat& a);
+
+	//este o functie globala dar care este declarata friend in clasa Angajat si avem
+	//acces la zona private si protected
+	//transfer prin referinta caci vreau sa operez asupra obj real, si nu asupra copiei
+	friend istream& operator>>(istream& in, Angajat& a) {
+		//nu avem cum sa gestionam atributele constante (adica nu le mai citim si le modificam)
+		if (a.nume != nullptr)
+		{
+			delete[] a.nume;
+			a.nume = nullptr;
+		}
+		cout << "\nIntroduceti nume: ";
+		string nume;
+		in >> nume;
+		a.nume = new char[nume.length() + 1];//length pentru ca nume este string
+		strcpy_s(a.nume, nume.length() + 1, nume.data());//metoda data din clasa string este echivalenta cu getString-ul
+		
+		cout << "Introduceti salariu: ";
+		in >> a.salariu;
+		cout << "Introduceti departament: ";
+		int codDepartament;
+		in >> codDepartament;
+		a.departament = (Departament)codDepartament;//cast explicit de la int la Departament
+		if (a.listaBonusuri != nullptr) {
+			delete[] a.listaBonusuri;
+			a.listaBonusuri = nullptr;
+		}
+		cout << "Introduceti nr bonusuri: ";
+		in >> a.nrBonusuri;
+		if (a.nrBonusuri <= 0) {
+			a.nrBonusuri = 0;
+			a.listaBonusuri = nullptr;
+		}
+		else {
+			a.listaBonusuri = new float[a.nrBonusuri];
+			cout << "Introduceti lista bonusuri: ";
+			for (int i = 0; i < a.nrBonusuri; i++)
+				in >> a.listaBonusuri[i];
+		}
+		return in;
+	}
 };
 
 int Angajat::nrAngajati = 0;
@@ -215,6 +265,8 @@ int main() {
 	Angajat a2("Gigel", 10000, IT);
 	cout << a2; //cout este un obj de tipul ostream
 	cout << a2 << a1; 
+	cin >> a2;//cin este un obj de tip istream
+	cout << a2;
 
 	/*
 	! ++ (pre si post)
