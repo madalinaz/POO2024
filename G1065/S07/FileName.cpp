@@ -2,6 +2,21 @@
 #include<iostream>
 using namespace std;
 
+//adaugati un enum in clasa
+//supraincarcati op << si >> pentru a gestiona enum
+
+enum TipMancare {
+	PIZZA, PASTE, DESERT, BURGER
+};
+
+ostream& operator<<(ostream& out, TipMancare t) {
+	if (t == TipMancare::PIZZA)
+		out << "Pizza";
+	else
+		out << "Other";
+	return out;
+}
+
 class FelMancare {
 	const int cod;
 	char* denumire;
@@ -78,6 +93,24 @@ public:
 		}
 	}
 
+
+
+	//meth afisare
+	void afisare()
+	{
+		cout << "\n-----------";
+		cout << "\nCod: " << this->cod;
+		cout << "\nDenumire: " << this->denumire;
+		cout << "\nNr.Calorii: " << this->nrCalorii;
+		cout << "\nPret: " << this->pret;
+		cout << "\nNr preturi: " << this->nrPreturi;
+		cout << " \nIstoric preturi: ";
+		for (int i = 0; i < this->nrPreturi; i++) {
+			cout << this->istoricPreturi[i] << " ";
+		}
+		cout << "\n-----------";
+	}
+
 	//operator=
 	FelMancare& operator=(const FelMancare& f) {
 		if (this != &f) {
@@ -144,44 +177,39 @@ public:
 		//return !(*this == f); //SAU
 	}
 
-	FelMancare operator+(float pretNou) const{
+	bool operator!() {
+		return this->nrPreturi == 0;
+	}
+
+	//forma de pre-incrementare
+	FelMancare& operator++() {
+		this->pret++;
+		return *this;//returnez obj de dupa incrementare
+	}
+
+	//forma de post-incrementare
+	FelMancare operator++(int) {
+		FelMancare copie = *this;//salvez starea anterioara incrementarii
+		this->pret++;
+		return copie;//returnez starea de dinainte de incrementare
+	}
+
+
+	//operator modifica this-ul???
+	//const pus dupa inseamna ca protejam this-ul
+	FelMancare operator+(float pretNou) const {
 		FelMancare rez = *this;
-		//dezaloc ce era inainte
+		//adaug un pretNou
 		if (rez.istoricPreturi != nullptr) {
 			delete[] rez.istoricPreturi;
 			rez.istoricPreturi = nullptr;
 		}
-		//aloc pentru noua dimensiune
 		rez.istoricPreturi = new float[rez.nrPreturi + 1];
-		//copiez elem dorite
 		for (int i = 0; i < rez.nrPreturi; i++)
 			rez.istoricPreturi[i] = this->istoricPreturi[i];
 		rez.nrPreturi++;
 		rez.istoricPreturi[rez.nrPreturi - 1] = pretNou;
 		return rez;
-	}
-
-	//daca vreau sa sterg mai multe preturi decat sunt, atunci vectorul devine nullptr
-	FelMancare operator-=(int nr) {
-		FelMancare copie = *this;
-		//dezaloc ce era inainte
-		if (this->istoricPreturi != nullptr) {
-			delete[] this->istoricPreturi;
-			this->istoricPreturi = nullptr;
-		}
-		this->nrPreturi = this->nrPreturi - nr;
-		if (this->nrPreturi < 0) {
-			this->nrPreturi = 0;
-			this->istoricPreturi = nullptr;
-		}
-		else {
-			//mai am preturi care raman 
-			this->istoricPreturi = new float[this->nrPreturi];
-			for (int i = nr, k=0; i < copie.nrPreturi; i++, k++) {
-				this->istoricPreturi[k] = copie.istoricPreturi[i];
-			}
-		}
-		return *this;
 	}
 
 	//get si set pentru denumire
@@ -194,6 +222,7 @@ public:
 			delete[] this->denumire;
 			this->denumire = nullptr;
 		}
+
 		this->denumire = new char[strlen(_denumire) + 1];
 		strcpy(this->denumire, _denumire);
 
@@ -243,27 +272,26 @@ public:
 		return out;
 	}
 
-	//variatii
-	//nu fac si citirea vectorului
-	//de avut grija la citiri multiple de siruri de caractere cu spatii
-	//se cere reintroducere pana la introducere valoare corecta
+	//VARIATIUNI
+	//citiri multiple de siruri de caractere cu spatii 
+	//se cere reintroducerea unei valori pana ce valoarea este corecta
+	//citire de enum
 
-	//transferul prin referinta pentru f nu se declara constant
-	//dorim sa facem modificari la nivelul obj f
+	//transfer prin referinta pe f fara sa il declar const pentru ca il modific
 	friend istream& operator>>(istream& in, FelMancare& f) {
 		cout << "\nIntroduceti denumire: ";
-		string buffer;
-		//char buffer2[50];
-		in >> buffer;
 		if (f.denumire != nullptr) {
 			delete[] f.denumire;
 			f.denumire = nullptr;
 		}
+		//char buffer2[50];
+		string buffer;
+		in >> buffer;
 		f.denumire = new char[buffer.size() + 1];
-		strcpy_s(f.denumire, buffer.size() + 1, buffer.data());//data() extrage char* din string
+		strcpy_s(f.denumire, buffer.size() + 1, buffer.data());//meth data preia char* dintr-un string
 		cout << "Introduceti nr calorii: ";
 		in >> f.nrCalorii;
-		cout << "Introduceti pretul: ";
+		cout << "Introduceti pret: ";
 		in >> f.pret;
 		if (f.istoricPreturi != nullptr) {
 			delete[] f.istoricPreturi;
@@ -271,18 +299,18 @@ public:
 		}
 		cout << "Introduceti dimensiune istoric preturi: ";
 		in >> f.nrPreturi;
-		if (f.nrPreturi > 0) {
-			f.istoricPreturi = new float[f.nrPreturi];
-			for (int i = 0; i < f.nrPreturi; i++)
-				in >> f.istoricPreturi[i];
-		}
-		else {
+		if (f.nrPreturi <= 0) {
 			f.nrPreturi = 0;
 			f.istoricPreturi = nullptr;
 		}
+		else {
+			f.istoricPreturi = new float[f.nrPreturi];
+			cout << "Introduceti lista istoric preturi: ";
+			for (int i = 0; i < f.nrPreturi; i++)
+				in >> f.istoricPreturi[i];
+		}
 		return in;
 	}
-
 };
 int FelMancare::nrFeluriMancare = 0;
 float FelMancare::pretMinim = 20;
@@ -309,36 +337,37 @@ FelMancare& operator+=(FelMancare& f, float x) {
 int main() {
 	FelMancare f1;
 	FelMancare f2("Pizza", 1450, 40);
-	cout << f2;//cout este un obiect de tip ostream
+	cout << f2;//ostream<<FelMancare
 	cout << f2 << f1;
+	cout.operator<<(5);
+	operator<<(cout, f2);
+	f2.operator=(f1);
 	//cin >> f1;
 	cout << f1;
-	f1 = f2 + 120;//adaug in istoric preturi un pret nou de 120 ( la sfarsit)
-	f1 = f1 + 100;
-	for (int i = 0; i < 10; i++)
-		f1 = f1 + (i + 100);
-	cout << f1;
-	f1 -= 5;//se scot din istoric primele 5
-	cout << f1;
-	
-	//f1 = 120 + f2;//adaug la istoric preturi la inceput un nou pret de 120.
-	/*
-	<< si >>
-	+
-	-=
-	++ (pre si post)
-	*/
 
-	
-	/*
-	P1. se indentifica tipul operatorului(binar/unar) (aritmetic/logic...)
-	P2. se identifica tipul operanzilor
-	P3. daca primul operand este de tipul clasei, atunci se recomanda supraincarcare prin
-	metoda a clasei (this-ul "inghite" primul operand); daca nu, atunci obligatoriu
-	se implementeaza printr-o functie globala
-	P4. !!! returneaza ceva operatorul?
-	P5. !!! se modifica vreun operand?
-	*/
-	
+	int x = 2, y = 5;
+	if (!x)
+		cout << "\nx nu exista//x este 0";
+	else
+		cout << "\nx exista";
+	x = !y;
+	//operator ! evalueaza existenta obj nostru
+
+	if (!f2)
+		cout << "\nF2 nu are istoric de preturi";
+	else
+		cout << "\nF2 are un istoric de preturi";
+
+	f1 = ++f2;
+	f1 = f2++;
+
+	f1 = f2 + 10;//adaug un nou pret la istoric preturi
+
+
+	// ! ==(compar dpdv al tuturor campurilor) !=(true daca difera prin cel putin 1)
+	// + [] cast ++(pre si post) () 
+
+	TipMancare tipMancare = TipMancare::PIZZA;
+	cout << endl << tipMancare;
 	return 0;
 }
