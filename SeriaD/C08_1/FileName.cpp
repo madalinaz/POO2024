@@ -96,6 +96,51 @@ public:
 		return 0;
 	}
 
+	//operator index
+	//daca return e prin valoare, atunci nu face modificari
+	//return prin referinta, poate modifica
+	//VARIARII
+	//op [] primeste un element/cod/cod unic/si intoarce pozitia pe care se gaseste elem cautat
+	float operator[](int _index) {
+		if (_index >= 0 && _index < this->nrDeplasari)
+			return this->distantaDeplasari[_index];
+	}
+
+	//cast explicit la int
+	explicit operator int() {
+		return this->nrDeplasari;
+	}
+
+	//operator implicit la string
+	//echivalent toString
+	operator string() {
+		string rez;
+		rez += "\nModel: " + this->model;
+		char buffer[100];
+		//itoa(this->pret, buffer, 10);
+		//rez+= ", pret: " + (string)buffer;
+		return rez;
+	}
+
+	//operator functie
+	float operator()(int _index1, int _index2) {
+		if (_index1 <= _index2 && _index1 >= 0 && _index2 < this->nrDeplasari) {
+			float suma = 0;
+			for (int i = _index1; i <= _index2; i++)
+				suma += this->distantaDeplasari[i];
+			return suma;
+		}
+	}
+
+	int operator()() {
+		int ct = 0;
+		for (int i = 0; i < this->nrDeplasari; i++)
+			if (this->distantaDeplasari[i] >= 100)
+				ct++;
+		return ct;
+	}
+
+
 	~Masina() {
 		if (this->distantaDeplasari != nullptr) {
 			delete[] this->distantaDeplasari;
@@ -202,9 +247,23 @@ int main() {
 	cout << endl << "Total: " << totalDeplasari2;
 
 	cout << m1 << m2;
-	cin >> m1;
+	//cin >> m1;
 	cout << m1;
 
-	//cast functie []
+	//operator index
+	float distantaDeplasare = m1[0];
+	cout << endl << "\nDistanta deplasare 0 folosind operator index: " << distantaDeplasare;
+	//m1[0] = 123; doar ca e return prin & la op[]
+
+	//operator cast
+	int nrDeplasari = (int)m1;//conversie/cast explicit de la Masina la int
+	cout << "\nNr deplasari folosind cast la int: " << nrDeplasari;
+	
+	string model = m1;//cast implicit la string
+	cout << "\nModel masina folosind cast la string: " << model;
+	
+	//operator functie
+	float sumaDeplasariInInterval = m1(0, 2);//m1.operator()(0,2)
+	int nrDeplasariPeste100 = m1();
 	return 0;
 }
