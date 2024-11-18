@@ -1,6 +1,74 @@
 #include<iostream>
 using namespace std;
 
+class Sejur {
+	const int id;
+	string destinatie="-";
+	float pretBaza=0;
+	int nrExcursiiOptionale=0;
+	float* pretExcursie=nullptr;
+	string numeGhid="-";
+	int durataSejur = 0;
+	static float pretMinimExcursie;
+	float bacsisGhid;
+
+public:
+	Sejur(int _id) :id(_id) {
+
+	}
+
+	//constructor cu toti param
+	//cosntructor copiere
+	//op =
+	//destructor
+
+	int getNrMaximExcursii(float bugetMaximSejur) {
+		int ct = 0;
+		//scad din buget pretul de baza sejur
+		//fac copie pe vector de excursii optionale
+		//sortez crescator
+		//le aleg pe cele mai ieftine pana ating pretul de buget maxim
+		return ct;
+	}
+
+	explicit operator float() {
+		//total pe pret sejur + toate optionalele
+		return 0.0f;
+	}
+
+	//exemplu lucru cu siruri de caractere si citiri cu spatii
+	//https://github.com/madalinaz/POO2024/blob/main/G1061/S03/S03.cpp
+
+	//operator -- in post-decremetnare
+	Sejur operator--(int) {
+		Sejur copie = *this;
+		//get min si de cate ori apare
+		float min = this->pretExcursie[0];
+		int ctMin = 1;
+		for(int i=1;i<this->nrExcursiiOptionale;i++)
+			if (this->pretExcursie[i] < min) {
+				min = this->pretExcursie[i];
+				ctMin = 1;
+			}
+			else if (this->pretExcursie[i] == min) {
+				ctMin++;
+			}
+		//dezalocare pe this
+		//alocare cat trebuie
+		//copiere din copie a tuturor elem diferite de min
+		return copie;
+	}
+
+	bool operator<(int x) const {
+		//evalueaza un Sejur dpdv al nr de excursii optionale
+		return this->nrExcursiiOptionale < x;
+	}
+};
+
+bool operator<=(int x, const Sejur& s) {
+	return !(s < x);
+}
+
 enum Departament {
 	IT, HR, VZ
 };
@@ -183,12 +251,26 @@ public:
 		return rez;
 	}
 
-	//cast la float
-	operator float() {
+	//cast explicit la float
+	explicit operator float() {
 		float salariuTotal = this->salariu;
 		for (int i = 0; i < this->nrBonusuri; i++)
 			salariuTotal += this->listaBonusuri[i];
 		return salariuTotal;
+	}
+
+	//cast implicit la string
+	operator string() {
+		return this->nume;
+	}
+
+	//operator functie
+	int operator()(float prag) {
+		int ct = 0;
+		for (int i = 0; i < this->nrBonusuri; i++)
+			if (this->listaBonusuri[i] >= prag)
+				ct++;
+		return ct;
 	}
 
 	//get si set pentru nume
@@ -351,8 +433,22 @@ int main() {
 	functie ()
 	*/
 
-	float salariuTotal = a2; //cast (operator unar) la float
+	float salariuTotal = (float)a2; //cast (operator unar) la float
 
+	string nume = a2;
+	cout << endl << nume;
+	//float test = a2--;
+
+	//a2.operator=(a1);
+	//operator functie
+	int nrBonusuriPestePrag = a2(200); //a2.operator()(200)
+	cout << endl << nrBonusuriPestePrag;
+
+	Angajat listaAngajati[10];
+	int nr;
+	//int pozitie = a2(listaAngajati, nr);
+	//int nrBonusuri = a2();
+	//float medieBonusuri = a2();
 
 	return 0;
 }
