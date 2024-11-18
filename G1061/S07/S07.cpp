@@ -150,6 +150,48 @@ public:
 		return false;
 	}
 
+	//operator++ pre incrementare
+	Angajat& operator++() {
+		this->salariu++;
+		return *this;//returneaza starea obj de dupa incrementare
+	}
+
+	//forma de post incrementare
+	//return este prin valoare pentru ca obj copie este declarat pe stiva op ++
+	Angajat operator++(int) {
+		Angajat copie = *this;//copiez starea obj this de dinainte de incrementare
+		this->salariu++;
+		//(*this)++;//apel operator++ in forma de pre-incrementare
+		return copie;//returnez stare obj de dinainte de ++
+	}
+
+	//se pune const pentru ca this NU se modifica in aceasta metoda
+	//si atunci ne protejam obj this
+	float operator+(const Angajat& a) const{
+		//OBJ THIS NU SE MODIFICA
+		float rez = 0;
+		rez = this->salariu + a.salariu;
+		return rez;
+	}
+
+	//operator index
+	float operator[](int _index) {
+		if (_index >= 0 && _index < this->nrBonusuri) {
+			return this->listaBonusuri[_index];
+		}
+		return -1;
+	}
+
+	//cast implicit la float
+	operator float() {
+		//de validat ca exista bonusuri
+		float bonusMaxim = this->listaBonusuri[0];
+		for (int i = 1; i < this->nrBonusuri; i++)
+			if (this->listaBonusuri[i] > bonusMaxim)
+				bonusMaxim = this->listaBonusuri[i];
+		return bonusMaxim;
+	}
+
 	//meth afisare
 	void afisare() {
 		cout << "\n----------------";
@@ -273,15 +315,31 @@ int main() {
 	Angajat a2("Gigel", Departament::IT, 12000, 3, bonusuri);
 	cout << a2; //(cout->obiect de tip ostream) si (a2->Angajat)
 	//operator<<(cout, a2);
-	cin >> a2;//istream >> Angajat
+	//cin >> a2;//istream >> Angajat
 	cout << a2;
 
+	a1 = ++a2;
+	cout << a1 << a2;
+	a1 = a2++;
+	cout << a1 << a2;
+
+	float salariuTotal = a2 + a1;
+	cout << "\nSalariu total folosind operator+ " << salariuTotal;
+
+	float bonus = a2[0];//utilizare op index[]
+	cout << "\nBonus folosind operator index[]: " << bonus;
+	//op index cu rol de modificari 
+	//a2[0] = 123;
+
+	//exemple operator cast
+	float bonusMaxim = a2;//cast implicit la float
+	cout << "\nBonus maxim folosind cast la float implicit: " << bonusMaxim;
+	
+	int test = a2 - 10;//apel implicit cast la float
+	float rez = 12.5;
+	int val = rez;
 	/*
-	<< si >>
-	++ (pre si post)
-	+
 	!
-	[] index
 	cast
 	() functie
 	*/
