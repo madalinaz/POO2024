@@ -196,6 +196,68 @@ public:
 	}
 
 	friend bool operator>(float _altSalariu, const Angajat& a);
+
+	friend ostream& operator<<(ostream& out, const Angajat& a) {
+		out << "\n----------------";
+		out << "\nCod: " << a.cod;
+		out << "\nNume: " << a.nume;
+		out << "\nDepartament: " << a.departament;
+		out << "\nSalariu: " << a.salariu;
+		out << "\nNr bonusuri: " << a.nrBonusuri;
+		out << "\nLista bonusuri: ";
+		for (int i = 0; i < a.nrBonusuri; i++)
+			out << a.listaBonusuri[i] << " ";
+		return out;
+	}
+
+	//VARIATII
+	//posibilitate citire siruri de caractere cu spatii
+	//citire multipla pana cand se introduce o valoare corecta
+	//posibilitate de citire partiala de obj (poate nu se cere si lista=> atunci lista se goleste si se face nullptr)
+
+	//obligatoriu transfer pe a prin referinta
+	//pentru ca obj a se actualizeaza in proces de citire
+	friend istream& operator>>(istream& in, Angajat& a) {
+		//NU citim atribute constante pentru ca nu le putem modifica
+		cout << "\nIntroduceti nume: ";
+		string buffer;
+		in >> buffer;
+		//ca sa nu avem memory leaks
+		//pentru ca obj a deja exista
+		if (a.nume != nullptr) {
+			delete[] a.nume;
+			a.nume = nullptr;
+		}
+		a.nume = new char[buffer.length() + 1];//echivalent lui strlen(buffer)
+		strcpy_s(a.nume, buffer.length() + 1, buffer.data());//meth data extrage char*-ul din string
+		cout << "Introduceti departament: ";
+		//in >> a.departament;
+		int codDepartament;
+		in >> codDepartament;
+		//cu riscul ca utilizatorul introduce si alte valori....
+		a.departament = (Departament)codDepartament;
+		cout << "Introduceti salariu: ";
+		in >> a.salariu;
+		cout << "Introduceti nr bonusuri: ";
+		in >> a.nrBonusuri;
+		//pentru no memory leaks, obj a deja exista
+		if (a.listaBonusuri != nullptr) {
+			delete[] a.listaBonusuri;
+			a.listaBonusuri = nullptr;
+		}
+		if (a.nrBonusuri <= 0) {
+			a.nrBonusuri = 0;
+			a.listaBonusuri = nullptr;
+		}
+		else {
+			//alocam zm pentru noua dimensiune citita
+			a.listaBonusuri = new float[a.nrBonusuri];
+			cout << "Introduceti lista bonusuri: ";
+			for (int i = 0; i < a.nrBonusuri; i++)
+				in >> a.listaBonusuri[i];
+		}
+		return in;
+	}
 };
 
 int Angajat::nrAngajati = 0;
@@ -209,8 +271,20 @@ int main() {
 
 	float bonusuri[] = { 120.5,1000,1200 };
 	Angajat a2("Gigel", Departament::IT, 12000, 3, bonusuri);
+	cout << a2; //(cout->obiect de tip ostream) si (a2->Angajat)
+	//operator<<(cout, a2);
+	cin >> a2;//istream >> Angajat
+	cout << a2;
 
-
+	/*
+	<< si >>
+	++ (pre si post)
+	+
+	!
+	[] index
+	cast
+	() functie
+	*/
 
 
 	/*
