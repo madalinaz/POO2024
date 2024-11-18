@@ -51,6 +51,7 @@ istream& operator>>(istream& in, Ambalaj& a) {
 	return in;
 }
 
+//Cadou has a Ambalaj
 class Cadou {
 	string denumire = "-";
 	float pret = 0;
@@ -86,6 +87,51 @@ public:
 		in >> c.ambalaj;
 		return in;
 	}
+};
+
+class WishList1 {
+	string detinator;
+	Cadou** listaCadouri;//vector alocat dinamic de Cadou*
+	int nrCadouri;
+};
+
+class WishList2 {
+	string detinator;
+	Cadou* listaCadouri[100];//vector alocat static de Cadou*
+	int nrCadouri;
+};
+
+class WishList3 {
+	string detinator;
+	Cadou* listaCadouri;//vector alocat dinamic de Cadou
+	int nrCadouri;
+};
+
+class WishList4 {
+	string detinator;
+	Cadou listaCadouri[100];//vector alocat static de Cadou
+	int nrCadouri;
+};
+
+//has a de tip 1-1
+class WishList5 {
+	string detinator;
+	Cadou cadouSpecial;//un obj de tip Cadou
+	int nrCadouri;
+};
+
+//has a de tip 1-1
+class WishList6 {
+	string detinator;
+	Cadou* cadouSpecial;//un pointer la un Cadou
+	int nrCadouri;
+};
+
+class WishList7 {
+	string detinator;
+	Cadou** cadouSpecial[24];//calendar Advent
+	int* nrCadouri;
+	int nrPrieteni;
 };
 
 int main() {
