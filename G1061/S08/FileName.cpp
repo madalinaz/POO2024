@@ -7,6 +7,9 @@ class Plantatie {
 	int nrPomi;
 	int* varsta;
 	static int varstaMinimaRod;
+	//char* proprietar;
+	//string* vectorStringuri;
+	//bool* vectorBooluri;
 	
 	//alte atribute la alegere
 	//string proprietar;
@@ -88,6 +91,35 @@ public:
 			if (this->varsta[i] != p.varsta[i])
 				return false;
 		return true;
+	}
+
+	//operator functie
+	Plantatie operator()(int pragMinim) {
+		Plantatie rez = *this; //constructor de copiere
+		//cati pomi pastrez in rez
+		int ct = 0;
+		for (int i = 0; i < rez.nrPomi; i++)
+			if (rez.varsta[i] >= pragMinim)
+				ct++;
+		if (rez.varsta != nullptr) {
+			delete[] rez.varsta;
+			rez.varsta = nullptr;
+		}
+		if (ct == 0) {
+			rez.nrPomi = 0;
+			rez.varsta = nullptr;
+		}
+		else {
+			rez.nrPomi = ct;
+			rez.varsta = new int[ct];
+			//int k = 0;
+			for (int i = 0, k=0; i < this->nrPomi; i++) {
+				if (this->varsta[i] >= pragMinim) {
+					rez.varsta[k++] = this->varsta[i];
+				}
+			}
+		}
+		return rez;
 	}
 
 	string getAdresa() {
@@ -214,6 +246,21 @@ public:
 
 int Plantatie::varstaMinimaRod = 6;//minim 3 ani ca pomul sa dea roade
 
+class A {
+	int nrLocuri;
+	bool* ocupareLoc;
+
+public:
+	A(int _nrLocuri, bool* _ocupareLoc) {
+		if (_nrLocuri > 0 && _ocupareLoc != nullptr) {
+			this->nrLocuri = _nrLocuri;
+			this->ocupareLoc = new bool[this->nrLocuri];
+			for (int i = 0; i < this->nrLocuri; i++)
+				this->ocupareLoc[i] = _ocupareLoc[i];
+		}
+	}
+};
+
 int main() {
 	cout << "\n----------Apel constructor cu 1 parametru--------------";
 	Plantatie p1(10);
@@ -260,5 +307,12 @@ int main() {
 	cout << "\n----------Apel meth get si set pentru atribut static-------------";
 	Plantatie::setVarstaMinimaRod(5);
 	cout << "\nVarsta minima rod: " << Plantatie::getVarstaMinimaRod();
+	cout << "\n----------Apel operator functie-------------";
+	p4 = p5(4);//construieste un obj nou plecand de la p5 elimina din el toti pomii care au varsta sub 4 ani
+	Plantatie p6 = p5(5);
+	cout << p6;
+	cout << "\n----------CLASA A CU BOOL*-------------";
+	bool v[] = { true, true,true,false };
+	A a(4, v);
 	return 0;
 }
