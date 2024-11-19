@@ -68,6 +68,28 @@ public:
 		return *this;
 	}
 
+	//cast la int explicit
+	explicit operator int() {
+		int ct = 0;
+		for (int i = 0; i < this->nrPomi; i++)
+			if (this->varsta[i] >= Plantatie::varstaMinimaRod)
+				ct++;
+		return ct;
+	}
+
+	bool operator==(const Plantatie& p) {
+		if (this->id != p.id)
+			return false;
+		if (this->adresa != p.adresa)
+			return false;
+		if (this->nrPomi != p.nrPomi)
+			return false;
+		for (int i = 0; i < this->nrPomi; i++)
+			if (this->varsta[i] != p.varsta[i])
+				return false;
+		return true;
+	}
+
 	string getAdresa() {
 		return this->adresa;
 	}
@@ -124,6 +146,16 @@ public:
 		return ct;
 	}
 
+	static int getVarstaMinimaRod() {
+		return Plantatie::varstaMinimaRod;
+	}
+
+	static void setVarstaMinimaRod(int _varstaMinimaRod) {
+		if (_varstaMinimaRod >= 1) {
+			Plantatie::varstaMinimaRod = _varstaMinimaRod;
+		}
+	}
+
 	~Plantatie() {
 		if (this->varsta != nullptr) {
 			delete[] this->varsta;
@@ -140,9 +172,47 @@ public:
 			out << p.varsta[i] << " ";
 		return out;
 	}
+
+	friend istream& operator>>(istream& in, Plantatie& p) {
+		cout << "\nIntroduceti adresa: ";
+		in >> p.adresa;
+		if (p.varsta != nullptr) {
+			delete[] p.varsta;
+			p.varsta = nullptr;
+		}
+		cout << "Introduceti nr pomi: ";
+		in >> p.nrPomi;
+		if (p.nrPomi <= 0) {
+			p.nrPomi = 0;
+			p.varsta = nullptr;
+		}
+		else {
+			p.varsta = new int[p.nrPomi];
+			cout << "Introduceti varsta pomi: ";
+			for (int i = 0; i < p.nrPomi; i++)
+				in >> p.varsta[i];
+		}
+		return in;
+	}
+
+	friend Plantatie operator+(int x, const Plantatie& p) {
+		Plantatie rez = p;
+		if (x > 0) {
+			if (rez.varsta != nullptr) {
+				delete[] rez.varsta;
+				rez.varsta = nullptr;
+			}
+			rez.varsta = new int[rez.nrPomi + 1];
+			for (int i = 0; i < rez.nrPomi; i++)
+				rez.varsta[i] = p.varsta[i];
+			rez.varsta[rez.nrPomi] = x;
+			rez.nrPomi++;
+		}
+		return rez;
+	}
 };
 
-int Plantatie::varstaMinimaRod = 3;//minim 3 ani ca pomul sa dea roade
+int Plantatie::varstaMinimaRod = 6;//minim 3 ani ca pomul sa dea roade
 
 int main() {
 	cout << "\n----------Apel constructor cu 1 parametru--------------";
@@ -175,5 +245,20 @@ int main() {
 	Plantatie p4(1023);
 	p4 = p1;
 	cout << p4;
+	cout << "\n----------Apel operator +--------------";
+	p4 = 10 + p4;
+	cout << p4;
+	cout << "\n----------Apel operator cast la int--------------";
+	int nrPomiRod = (int)p4;
+	cout << "\nNr pomi cu rod folosind cast la int: " << nrPomiRod;
+	cout << "\n----------Apel operator ==--------------";
+	Plantatie p5(p4);
+	cout << endl<< (p5 == p4);
+	cout << "\n----------Apel operator >>-------------";
+	//cin >> p5;
+	cout << p5;
+	cout << "\n----------Apel meth get si set pentru atribut static-------------";
+	Plantatie::setVarstaMinimaRod(5);
+	cout << "\nVarsta minima rod: " << Plantatie::getVarstaMinimaRod();
 	return 0;
 }
