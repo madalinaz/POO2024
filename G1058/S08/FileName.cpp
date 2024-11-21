@@ -22,7 +22,7 @@ public:
 	}
 
 	//nu am primit si rating ca am zis sa exersam si constr care NU are toti param
-	Prajitura(string _denumire, int _nrCalorii, int _nrIngrediente, float* _gramajIngrediente, bool _esteVegan) {
+	Prajitura(string _denumire, int _nrCalorii, int _nrIngrediente, float* _gramajIngrediente, bool _esteVegana) {
 		this->denumire = _denumire;
 		this->nrCalorii = _nrCalorii;
 		if (_nrIngrediente > 0 && _gramajIngrediente != nullptr) {
@@ -35,9 +35,34 @@ public:
 			this->nrIngrediente = 0;
 			this->gramajIngrediente = nullptr;
 		}
-		this->esteVegana = _esteVegan;
+		this->esteVegana = _esteVegana;
 		//nu am primit ca param si rating-ul
 		this->rating = 1;
+	}
+
+	Prajitura(const Prajitura& p) {
+		this->denumire = p.denumire;
+		this->nrCalorii = p.nrCalorii;
+		if (p.nrIngrediente > 0 && p.gramajIngrediente != nullptr) {
+			this->nrIngrediente = p.nrIngrediente;
+			this->gramajIngrediente = new float[this->nrIngrediente];
+			for (int i = 0; i < this->nrIngrediente; i++)
+				this->gramajIngrediente[i] = p.gramajIngrediente[i];
+		}
+		else {
+			this->nrIngrediente = 0;
+			this->gramajIngrediente = nullptr;
+		}
+		this->esteVegana = p.esteVegana;
+
+		this->rating = p.rating;
+	}
+
+	Prajitura& operator=(const Prajitura& p) {
+		if (this != &p) {
+
+		}
+		return *this;
 	}
 
 	float getRating() {
@@ -60,7 +85,29 @@ public:
 		}
 	}
 
+	float getGramajTotal() {
+		float rez = 0;
+		for (int i = 0; i < this->nrIngrediente; i++) {
+			rez += this->gramajIngrediente[i];
+		}
+		return rez;
+	}
 
+	~Prajitura() {
+		if (this->gramajIngrediente != nullptr) {
+			delete[] this->gramajIngrediente;
+			this->gramajIngrediente = nullptr;
+		}
+	}
+
+	friend ostream& operator<<(ostream& out, const Prajitura& p) {
+		out << "\nDenumire: " << p.denumire << ", nr calorii: " << p.nrCalorii;
+		out << ", nr ingrediente: " << p.nrIngrediente << ", ingrediente: ";
+		for (int i = 0; i < p.nrIngrediente; i++)
+			out << p.gramajIngrediente[i] << " ";
+		out << ", este vegana?: " << p.esteVegana << ", rating: " << p.rating;
+		return out;
+	}
 };
 
 float Prajitura::pretAmbalaj = 5;
@@ -68,10 +115,19 @@ float Prajitura::pretAmbalaj = 5;
 int main() {
 	cout << "\nZona constructor fara param si get si set";
 	Prajitura p1;
+	cout << p1;
 	p1.setRating(3);
 	cout << endl << p1.getRating();
 	Prajitura::setPretAmbalaj(6);
 	cout << endl << Prajitura::getPretAmbalaj();
-	cout << "\nConstructor cu toti param si destructor";
+	cout << "\nZona constructor cu toti param si destructor";
+	float gramaje[] = {50, 20, 40, 30};
+	Prajitura p2("Amandina", 400, 4, gramaje, false);
+	cout << p2;
+	cout << "\nZona meth prelucrare";
+	cout << endl << p2.getGramajTotal();
+	cout << "\nZona constructor copiere";
+	Prajitura p3(p2);
+	cout << p3;
 	return 0;
 }
