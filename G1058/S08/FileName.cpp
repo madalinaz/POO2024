@@ -60,7 +60,33 @@ public:
 
 	Prajitura& operator=(const Prajitura& p) {
 		if (this != &p) {
+			if (this->gramajIngrediente != nullptr) {
+				delete[] this->gramajIngrediente;
+				this->gramajIngrediente = nullptr;
+			}
+			this->denumire = p.denumire;
+			this->nrCalorii = p.nrCalorii;
+			if (p.nrIngrediente > 0 && p.gramajIngrediente != nullptr) {
+				this->nrIngrediente = p.nrIngrediente;
+				this->gramajIngrediente = new float[this->nrIngrediente];
+				for (int i = 0; i < this->nrIngrediente; i++)
+					this->gramajIngrediente[i] = p.gramajIngrediente[i];
+			}
+			else {
+				this->nrIngrediente = 0;
+				this->gramajIngrediente = nullptr;
+			}
+			this->esteVegana = p.esteVegana;
 
+			this->rating = p.rating;
+		}
+		return *this;
+	}
+
+	Prajitura& operator*=(int x) {
+		if (x > 0) {
+			for (int i = 0; i < this->nrIngrediente; i++)
+				this->gramajIngrediente[i] *= x;
 		}
 		return *this;
 	}
@@ -108,6 +134,21 @@ public:
 		out << ", este vegana?: " << p.esteVegana << ", rating: " << p.rating;
 		return out;
 	}
+
+	friend Prajitura operator+(float x, const Prajitura& p) {
+		//op + NU modifica operanzii
+		Prajitura rez = p;
+		if (rez.gramajIngrediente != nullptr) {
+			delete[] rez.gramajIngrediente;
+			rez.gramajIngrediente = nullptr;
+		}
+		rez.gramajIngrediente = new float[rez.nrIngrediente + 1];
+		for (int i = 0; i < p.nrIngrediente; i++)
+			rez.gramajIngrediente[i] = p.gramajIngrediente[i];
+		rez.gramajIngrediente[rez.nrIngrediente] = x;
+		rez.nrIngrediente++;
+		return rez;
+	}
 };
 
 float Prajitura::pretAmbalaj = 5;
@@ -129,5 +170,12 @@ int main() {
 	cout << "\nZona constructor copiere";
 	Prajitura p3(p2);
 	cout << p3;
+	cout << "\nZona operator atribuire";
+	Prajitura p4;
+	p4 = p2;
+	cout << p4;
+	cout << "\nZona operator *=";
+	p4 *= 2;
+	cout << p4;
 	return 0;
 }
