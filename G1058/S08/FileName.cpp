@@ -177,5 +177,10 @@ int main() {
 	cout << "\nZona operator *=";
 	p4 *= 2;
 	cout << p4;
+	cout << "\nZona operator +";
+	Prajitura p5;
+	p5 = 123 + p4;
+	cout << p5;
+	Prajitura p6 = 123 + p4;//copy elision
 	return 0;
 }
