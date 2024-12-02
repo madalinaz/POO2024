@@ -71,6 +71,10 @@ public:
 		return *this;
 	}
 
+	Ambalaj getAmbalaj() {
+		return this->ambalaj;
+	}
+
 	friend ostream& operator<<(ostream& out, const Cadou& c) {
 		out << "\nDenumire: " << c.denumire;
 		out << ", pret: " << c.pret;
@@ -115,6 +119,8 @@ public:
 				//*this->listaCadouri[i] = *_listaCadouri[i];
 
 				this->listaCadouri[i] = new Cadou(*_listaCadouri[i]);
+				if ((*this->listaCadouri[i]).getAmbalaj() == Ambalaj::GLOB)
+					WishList::nrCadouriInGlob++;
 			}
 		}
 	}
@@ -127,6 +133,8 @@ public:
 			this->listaCadouri = new Cadou * [this->nrCadouri];
 			for (int i = 0; i < this->nrCadouri; i++) {
 				this->listaCadouri[i] = new Cadou(*w.listaCadouri[i]);
+				if ((*this->listaCadouri[i]).getAmbalaj() == Ambalaj::GLOB)
+					WishList::nrCadouriInGlob++;
 			}
 		}
 	}
@@ -146,6 +154,8 @@ public:
 				this->listaCadouri = new Cadou * [this->nrCadouri];
 				for (int i = 0; i < this->nrCadouri; i++) {
 					this->listaCadouri[i] = new Cadou(*w.listaCadouri[i]);
+					if ((*this->listaCadouri[i]).getAmbalaj() == Ambalaj::GLOB)
+						WishList::nrCadouriInGlob++;
 				}
 			}
 			else {
@@ -158,8 +168,11 @@ public:
 
 	~WishList() {
 		if (this->listaCadouri != nullptr) {
-			for (int i = 0; i < this->nrCadouri; i++)
+			for (int i = 0; i < this->nrCadouri; i++) {
+				if ((*this->listaCadouri[i]).getAmbalaj() == Ambalaj::GLOB)
+					WishList::nrCadouriInGlob--;
 				delete this->listaCadouri[i];
+			}
 			delete[] this->listaCadouri;
 			this->listaCadouri = nullptr;
 		}
@@ -175,11 +188,18 @@ public:
 			out << *w.listaCadouri[i];
 		return out;
 	}
+
+	static int getNrCadouriInGlob() {
+		return WishList::nrCadouriInGlob;
+	}
 };
 
 int WishList::nrCadouriInGlob = 0;
 
 int main() {
+	Cadou vector[10];
+	Cadou* vector2[10];
+	cout << "Nr cadouri in glob: " << WishList::getNrCadouriInGlob();
 	Cadou c1("Stilou", 450.0, Ambalaj::CUTIE);
 	Cadou c2("Geanta", 1200, Ambalaj::HARTIE);
 	Cadou c3("Carte", 100, Ambalaj::CUTIE);
@@ -188,5 +208,12 @@ int main() {
 	Cadou* lista[] = { &c1, &c2, &c3, &c4, pc };
 	WishList w("Gigel", lista, 5, 3500);
 	cout << w;
+	WishList w2(w);
+	{
+		WishList w3;
+		w3 = w;
+	}
+	cout << "\nNr cadouri in glob: " << WishList::getNrCadouriInGlob();
+
 	return 0;
 }
