@@ -35,6 +35,47 @@ public:
 	}
 };
 
+class WishList {
+	string posesor;
+	Cadou** listaCadouri;
+	int nrCadouri;
+};
+
+class WishList2 {
+	string posesor;
+	Cadou* listaCadouri[10];
+	int nrCadouri;
+};
+
+class WishList3 {
+	string posesor;
+	Cadou* listaCadouri;
+	int nrCadouri;
+};
+
+class WishList4 {
+	string posesor;
+	Cadou listaCadouri[10];
+	int nrCadouri;
+};
+
+class WishList5 {
+	string posesor;
+	Cadou* cadouSpecial;
+};
+
+class WishList6 {
+	string posesor;
+	Cadou cadouSpecial;
+};
+
+class WishList7 {
+	string posesor;
+	Cadou** listaCadouri[24];
+	int nrPrieteni;
+	int* nrCadouri;
+};
+
 int main() {
 	Cadou c1("stilou", 550);
 	Cadou c2("carte", 100);
