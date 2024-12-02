@@ -1,18 +1,6 @@
 #include<iostream>
 using namespace std;
 
-class ExceptieNume{
-	string mesaj;
-public:
-	ExceptieNume(string _mesaj){
-		this->mesaj = _mesaj;
-
-	}
-
-	string getMesaj() {
-		return this->mesaj;
-	}
-};
 
 class Persoana {
 	string nume;
@@ -41,7 +29,16 @@ public:
 			this->nume = _nume;
 		}
 		else {
-			throw new ExceptieNume("sirul este prea scurt");
+			throw - 1;//arunca un cod de eroare
+		}
+	}
+
+	void setVarsta(int _varsta) {
+		if (_varsta > 0) {
+			this->varsta = _varsta;
+		}
+		else {
+			throw new exception("varsta negativa");
 		}
 	}
 
@@ -55,6 +52,10 @@ public:
 		this->nume = p.nume;
 		this->varsta = p.varsta;
 		return *this;
+	}
+
+	~Persoana() {
+		cout << "\nAPEL DESTRUCTOR PERSOANA";
 	}
 
 	friend ostream& operator<<(ostream& out, const Persoana& p) {
@@ -71,85 +72,108 @@ public:
 	}
 };
 
-class Student :public Persoana {
+class Student: public Persoana {
 	string facultate;
+	int anStudiu;
+
 public:
-	Student() {
+	Student():Persoana() {
 		cout << "\nAPEL CONSTRUCTOR FARA PARAM STUDENT";
 		this->facultate = "-";
+		this->anStudiu = 0;
 	}
 
-	Student(string _nume, int _varsta, string _facultate) :Persoana(_nume, _varsta) {
+	Student(string _nume, int _varsta, string _facultate, int _anStudiu):Persoana(_nume,_varsta) {
 		cout << "\nAPEL CONSTRUCTOR CU TOTI PARAM STUDENT";
 		this->facultate = _facultate;
+		this->anStudiu = _anStudiu;
 	}
 
-	Student(const Student& s) :Persoana(s) {
+	Student(Persoana _p, string _facultate, int _anStudiu):Persoana(_p) {
+		cout << "\nAPEL CONSTRUCTOR CU TOTI PARAM 2 STUDENT";
+		this->facultate = _facultate;
+		this->anStudiu = _anStudiu;
+	}
+
+	Student(const Student& s):Persoana(s)//apel constructor copiere + upcast
+	{
 		cout << "\nAPEL CONSTRUCTOR COPY STUDENT";
 		this->facultate = s.facultate;
-	}
-
-	void setFacultate(string _facultate) {
-		if (_facultate.length() >= 3) {
-			this->facultate = _facultate;
-		}
-		else {
-			throw - 1;
-		}
+		this->anStudiu = s.anStudiu;
 	}
 
 	Student& operator=(const Student& s) {
-		Persoana::operator=(s);
-		this->facultate = s.facultate;
+		cout << "\nAPEL OP= STUDENT";
+		if (this != &s) {
+			//this->Persoana::operator=(s);
+			Persoana::operator=(s);
+			this->facultate = s.facultate;
+			this->anStudiu = s.anStudiu;
+		}
 		return *this;
 	}
 
+	~Student() {
+		cout << "\nAPEL DESTRUCTOR STUDENT";
+	}
+
 	friend ostream& operator<<(ostream& out, const Student& s) {
-		out << (Persoana)s;
-		out << ", facultate: " << s.facultate;
+		out << (Persoana)s;//upcast prin valoare
+		out << ", facultate: " << s.facultate << ", an studiu: " << s.anStudiu;
 		return out;
 	}
 
 	friend istream& operator>>(istream& in, Student& s) {
-		in >> (Persoana&)s;
-		cout << "Facultate: ";
+		in >> (Persoana&)s;//upcast prin referinta
+		cout << "Introduceti facultate: ";
 		in >> s.facultate;
+		cout << "Introduceti an studiu: ";
+		in >> s.anStudiu;
 		return in;
 	}
 };
 
 int main() {
-	Persoana p1("Maria", 10);
-	cout << p1;
-	Persoana p2(p1);
-	p1 = p2;
-	cout << p1;
-
 	Student s1;
-	cout << s1;
-	Student s2(s1);
-	cout << s2;
-	Student s3("Gigel", 19, "CSIE");
+	Student s2("Gigel", 19, "CSIE", 1);
+	Persoana p1("Costel", 20);
+	Student s3(p1, "FABIZ", 2);
+	cout << "\n------------------------";
+	Student s4(s3);
+	cout << "\n------------------------";
+	s3 = s4;
+	cout << "\n------------------------";
 	cout << s3;
-	s1 = s3;
-	cout << s1;
+	cout << "\n------------------------";
 	//cin >> s3;
+	cout << "\n------------------------";
 	cout << s3;
-
+	cout << "\n-------ARUNCARE DE EXCEPTII--------";
 	try {
 		p1.setNume("AB");
+		cout << p1;
 	}
-	catch (ExceptieNume *ex) {
-		cout << endl << ex->getMesaj();
-		delete ex;
+	catch (int cod) {
+		cout << "\nNu s-a setat numele";
 	}
 
 	try {
-		s1.setFacultate("AB");
+		p1.setVarsta(-5);
+		cout << p1;
 	}
-	catch (int cod) {
-		cout << endl << cod;
+	catch (exception* ex) {
+		cout << endl<<ex->what();//este un getter pentru mesaj
+		delete ex;
 	}
-
+	
+	cout << "\n------------------------";
+	//to do
+	//derivare
+	// meth de tratare exceptii
+	//meth virtuale + meth virtuale pure
+	//clase abstracte + interfete
+	//fisiere text + binare
+	//clase template
+	//STL
 	return 0;
 }
