@@ -180,5 +180,13 @@ public:
 int WishList::nrCadouriInGlob = 0;
 
 int main() {
+	Cadou c1("Stilou", 450.0, Ambalaj::CUTIE);
+	Cadou c2("Geanta", 1200, Ambalaj::HARTIE);
+	Cadou c3("Carte", 100, Ambalaj::CUTIE);
+	Cadou c4("Inel", 2500, Ambalaj::GLOB);
+	Cadou* pc = new Cadou("Pulover", 500, Ambalaj::HARTIE);
+	Cadou* lista[] = { &c1, &c2, &c3, &c4, pc };
+	WishList w("Gigel", lista, 5, 3500);
+	cout << w;
 	return 0;
 }
