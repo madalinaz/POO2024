@@ -1,6 +1,19 @@
 #include<iostream>
 using namespace std;
 
+class ExceptieNume{
+	string mesaj;
+public:
+	ExceptieNume(string _mesaj){
+		this->mesaj = _mesaj;
+
+	}
+
+	string getMesaj() {
+		return this->mesaj;
+	}
+};
+
 class Persoana {
 	string nume;
 	int varsta;
@@ -21,6 +34,15 @@ public:
 		cout << "\nAPEL CONSTRUCTOR COPY PERSOANA";
 		this->nume = p.nume;
 		this->varsta = p.varsta;
+	}
+
+	void setNume(string _nume) {
+		if (_nume.length() >= 5) {
+			this->nume = _nume;
+		}
+		else {
+			throw new ExceptieNume("sirul este prea scurt");
+		}
 	}
 
 	bool operator<(const Persoana& p) {
@@ -67,6 +89,15 @@ public:
 		this->facultate = s.facultate;
 	}
 
+	void setFacultate(string _facultate) {
+		if (_facultate.length() >= 3) {
+			this->facultate = _facultate;
+		}
+		else {
+			throw - 1;
+		}
+	}
+
 	Student& operator=(const Student& s) {
 		Persoana::operator=(s);
 		this->facultate = s.facultate;
@@ -102,7 +133,23 @@ int main() {
 	cout << s3;
 	s1 = s3;
 	cout << s1;
-	cin >> s3;
+	//cin >> s3;
 	cout << s3;
+
+	try {
+		p1.setNume("AB");
+	}
+	catch (ExceptieNume *ex) {
+		cout << endl << ex->getMesaj();
+		delete ex;
+	}
+
+	try {
+		s1.setFacultate("AB");
+	}
+	catch (int cod) {
+		cout << endl << cod;
+	}
+
 	return 0;
 }
