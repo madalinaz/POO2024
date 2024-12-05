@@ -51,6 +51,7 @@ istream& operator>>(istream& in, Ambalaj& a) {
 	return in;
 }
 
+//evidentiere concept compunere
 //Cadou has a Ambalaj
 class Cadou {
 	string denumire = "-";
@@ -89,6 +90,55 @@ public:
 	}
 };
 
+class WishList {
+	string posesor;
+	int nrCadouri;
+	Cadou** listaCadouri;
+};
+
+class WishList2 {
+	string posesor;
+	int nrCadouri;
+	Cadou* listaCadouri[100];
+};
+
+class WishList3 {
+	string posesor;
+	int nrCadouri;
+	Cadou* listaCadouri;
+};
+
+class WishList4 {
+	string posesor;
+	int nrCadouri;
+	Cadou listaCadouri[100];
+};
+
+class WishList5 {
+	string posesor;
+	Cadou* cadouSpecial;
+};
+
+class WishList6 {
+	string posesor;
+	Cadou cadouSpecial;
+};
+
+class WishList7 {
+	string posesor;
+	int nrPrieteni;
+	int* nrCadouri;
+	Cadou*** listaCadouri;
+};
+
+class WishList8 {
+	string posesor;
+	int nrPrieteni;
+	int* nrCadouri;
+	Cadou** listaCadouri[24];
+};
+
 int main() {
+
 	return 0;
 }
