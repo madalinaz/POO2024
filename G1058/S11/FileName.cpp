@@ -41,6 +41,22 @@ public:
 
 };
 
+//Manager is a Angajat
+//Manager has a lista Angajat (vector alocat dinamic de obj tip Angajat)
+class Manager : public Angajat {
+	int nrSubalterni;
+	Angajat* listaAngajati;
+	int grad;//1-5
+
+public:
+	//constructor fara param
+	//constructor cu param mai putin vector si dimensiune
+	//constructor de copiere
+	//op=
+	//destructor
+	//ostream
+};
+
 int main() {
 
 	return 0;
