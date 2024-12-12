@@ -39,15 +39,9 @@ public:
 		return this->salariuBaza;
 	}
 
-	bool operator!=(const Angajat& a) {
-		if (this->nume != a.nume)
-			return true;
-		if (this->salariuBaza != a.salariuBaza)
-			return true;
-		return false;
-	}
 };
 
 int main() {
+
 	return 0;
 }
