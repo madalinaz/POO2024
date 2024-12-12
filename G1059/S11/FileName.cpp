@@ -61,6 +61,7 @@ public:
 	//destructor
 	//ostream
 	//set si get pe vector + dimensiune
+	//op + care adauga un nou Cadou in vector
 };
 
 int main() {
