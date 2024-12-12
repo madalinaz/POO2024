@@ -55,6 +55,10 @@ public:
 	//op=
 	//destructor
 	//ostream
+	//op += care populeaza vectorul listaAngajati(fara validari)
+	//op += care populeaza vectorul listaAngajati(cu validari unicitate pe nume)
+
+	//constructor cu toti param(adica primeste si un vector + dim)
 };
 
 int main() {
