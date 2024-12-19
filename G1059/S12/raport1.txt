@@ -1,0 +1,5 @@
+------------Raport vanzari------------
+------Benzinaria: OMV Zorelelor nr 40-----------
+Combustibil: 0, vanzari: 100
+Combustibil: 1, vanzari: 50
+Combustibil: 2, vanzari: 70
