@@ -11,6 +11,7 @@ using namespace std;
 //clasa este de tip interfata -> clasa care are DOAR meth virtuale pure
 //interfata = contract
 class ICheltuiala {
+public:
 	virtual float getCostLunar() = 0;
 };
 
@@ -64,7 +65,31 @@ public:
 
 //clasa Companie
 //modalitate de a calcula totalul cheltuielilor luna pe care le are compania
-//vector static/dinamic de ICheltuiala
+//vector static/dinamic de ICheltuiala*
+class Companie {
+	int nrCheltuieli;
+	ICheltuiala** listaCheltuieli;
+
+public:
+	Companie(int _nrCheltuieli, ICheltuiala** _listaCheltuieli) {
+		this->nrCheltuieli = _nrCheltuieli;
+		this->listaCheltuieli = new ICheltuiala*[this->nrCheltuieli];
+		for (int i = 0; i < this->nrCheltuieli; i++)
+			this->listaCheltuieli[i] = _listaCheltuieli[i];
+	}
+
+	~Companie() {
+		delete[] this->listaCheltuieli;
+		this->listaCheltuieli = nullptr;
+	}
+
+	float getTotalCheltuieli() {
+		float total = 0;
+		for (int i = 0; i < this->nrCheltuieli; i++)
+			total += this->listaCheltuieli[i]->getCostLunar();
+		return total;
+	}
+};
 
 int main() {
 	//interfata
@@ -75,9 +100,12 @@ int main() {
 	//Echipament* pe = new Echipament("laptop", "laptop Lenovo");
 	Echipament* pe;
 	//clasa concreta derivata din clasa abtracta
-	Laptop laptop("laptop Lenovo", 4000, 24);
-	Echipament* echipament = new Laptop("laptop Dell", 6000, 24);
+	Laptop laptop("laptop Lenovo", 2400, 24);
+	Echipament* echipament = new Laptop("laptop Dell", 4800, 24);
 	echipament = &laptop;
 
+	ICheltuiala* lista[] = { echipament, &laptop, new Angajat("Gigel",4000) };
+	Companie c(3, lista);
+	cout << endl << "Total cheltuieli: " << c.getTotalCheltuieli();
 	return 0;
 }
