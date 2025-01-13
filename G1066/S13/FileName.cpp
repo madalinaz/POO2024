@@ -63,8 +63,16 @@ public:
 //protected
 
 class Pisica :public Animal {
+public:
+	Pisica(string _denumire):Animal(_denumire) {
+
+	}
 	void striga() {
 		cout << "\nPisica " + this->denumire << " miauna";
+	}
+
+	void seEnerveaza() {
+		cout << "\nPisica " + this->denumire << " zgarie";
 	}
 };
 
@@ -86,5 +94,9 @@ int main() {
 
 	//Animal animal1("Grivei");
 	Animal* pAnimal = new Pisica("Oscar");
+
+	IPersonaj* pPersonaj = new Pisica("Oscar");
+	scenetaI(pa2, pPersonaj);
+	scenetaI(pPersonaj, pa2);
 	return 0;
 }
