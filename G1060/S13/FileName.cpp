@@ -152,7 +152,7 @@ int main() {
 	//clasa abstracta
 	//ACheltuiala obj("contract apa", "12/12/2020");
 	//ACheltuiala* pObj2 = new ACheltuiala("contract apa", "12/12/2020");
-
+	//
 	CheltuialaEchipament chEp("laptop", "12/12/2000", 4800, 24);
 	chEp.getInfo();
 	ACheltuiala* pCh = new CheltuialaEchipament("laptop", "12/12/2000", 4800, 24);//upcast pe pointeri
