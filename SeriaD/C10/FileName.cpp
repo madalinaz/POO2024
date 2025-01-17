@@ -1,6 +1,14 @@
 #include<iostream>
 using namespace std;
 
+class ExceptieCustom : public exception {
+public:
+	ExceptieCustom() {
+
+	}
+
+	ExceptieCustom(const char* mesaj):exception(mesaj){ }
+};
 
 class Persoana {
 	string nume;
@@ -38,7 +46,7 @@ public:
 			this->varsta = _varsta;
 		}
 		else {
-			throw new exception("varsta negativa");
+			throw new ExceptieCustom("varsta negativa");
 		}
 	}
 
@@ -161,10 +169,15 @@ int main() {
 		p1.setVarsta(-5);
 		cout << p1;
 	}
-	catch (exception* ex) {
-		cout << endl<<ex->what();//este un getter pentru mesaj
+	catch (ExceptieCustom* ex) {
+		cout << endl << ex->what();
 		delete ex;
 	}
+	catch (exception* ex) {
+		cout << endl<<ex->what();
+		delete ex;
+	}
+	//ordinea este importanta, se gestioneaza de la cat mai specific spre cat mai general
 	
 	cout << "\n------------------------";
 	//to do
