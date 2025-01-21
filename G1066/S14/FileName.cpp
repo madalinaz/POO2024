@@ -1,5 +1,9 @@
 #include<iostream>
 #include<fstream>
+#include<vector>
+#include<list>
+#include<set>
+#include<map>
 using namespace std;
 
 class Student {
@@ -167,6 +171,11 @@ public:
 		}
 		return in;
 	}
+
+	//ne trebuie aceasta forma pentru op de comparatie la set
+	bool operator<(const Student& s) const{//de fapt declar ca si this este const
+		return this->nume < s.nume;
+	}
 };
 
 int main() {
@@ -206,5 +215,87 @@ int main() {
 	sNou.readFromFile(fileIn);
 	fileIn.close();
 	cout << sNou;
+
+	cout << "\n------------------STL------------";
+	cout << "\n------------------VECTOR------------";
+	vector<int> vInt;
+	vInt.push_back(10);
+	vInt.push_back(20);
+	vInt.push_back(30);
+	vInt.push_back(40);
+
+	//si aici se poate cu iterator, precum la list,set,map
+	cout << "\nAfisare vector de int: ";
+	for (int i = 0; i < vInt.size(); i++)//folosesc index pentru ca este zona de memorie contigua
+		cout << vInt[i] << " ";
+	cout << "\n------------------LIST------------";
+	list<float> lFloat;
+	lFloat.push_back(20);
+	lFloat.push_front(10);
+	lFloat.push_front(30);
+	lFloat.push_back(40);
+
+	cout << "\nAfisare lista de float: ";
+	list<float>::iterator itList;
+	for (itList = lFloat.begin(); itList != lFloat.end(); itList++) {
+		cout << *itList << " ";
+	}
+	cout << "\n------------------SET------------";
+	set<string> sString;
+	sString.insert("Popescu Maria");
+	sString.insert("Ionescu Marcel");
+	sString.insert("Ivanca Dorina");
+	sString.insert("Popescu Maria");
+
+	cout << "\nAfisare set de string: ";
+	set<string>::iterator itSet;
+	for (itSet = sString.begin(); itSet != sString.end(); itSet++) {
+		cout << *itSet << "* ";
+	}
+
+	cout << "\nAfisare set de string (invers): ";
+	set<string>::reverse_iterator itSet2;
+	for (itSet2 = sString.rbegin(); itSet2 != sString.rend(); itSet2++) {
+		cout << *itSet2 << "* ";
+	}
+
+	cout << "\nProcedura cautare: ";
+	itSet = sString.find("Ivanca Dorina");
+	if (itSet != sString.end()) {
+		cout << "\nS-a gasit ceea ce cautam!";
+		cout << *itSet;
+	}
+	else {
+		cout << "\nNu s-a gasit informatia cautata";
+	}
+	cout << "\n------------------SET STUDENT------------";
+	//folosesc acelasi vector de note dar preiau doar 3/2/4/5 elem din el
+	Student s12("Gigel", 3, note);
+	Student s13("Costel", 2, note);
+	Student s14("Marcel", 4, note);
+	Student s15("Maria", 5, note);
+	set<Student> sStud;
+	sStud.insert(s12);//fct insert apeleaza op< pentru a compara obj intre ele
+	sStud.insert(s13);
+	sStud.insert(s14);
+	cout << "\n------------------MAP------------";
+	map<int, Student> mStud; //stochez Studenti iar cautarea lor se face pe baza unei chei de tip int
+	mStud[0] = s12;
+	mStud[134] = s14;//134 este cheia
+	mStud[13] = s12;
+	mStud.insert(pair<int, Student>(13, s15));//sau asa putem face inserarea in map
+
+	map<int, Student>::iterator itMap;
+	cout << "\nAfisare map de Student: ";
+	for (itMap = mStud.begin(); itMap != mStud.end(); itMap++) {
+		cout << itMap->first << "//" << itMap->second << endl;
+	}
+
+	//extinderi pentru examen
+	//clasa Student, Materie/Disciplina
+	//modelez relatia dintre studenti si disciplinele la care sunt restanti/pe care le-au ales ca optionale
+	//astfel incat sa am unicitate pe studenti la nivelul unui an universitar
+	//sa am lista disciplinelor alese de Student iar in lista sa am unicitate
+	//map<Student, set<Disciplina>> structuraAn; (hint de implementare)
 	return 0;
 }
