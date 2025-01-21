@@ -95,5 +95,9 @@ int main() {
 	cout << s;
 	cin >> s;
 	cout << s;
+
+	int note[] = { 10,9,8,5,4,10 };
+	Student s1("Gigel", 6, note);
+	cout << s1;
 	return 0;
 }
